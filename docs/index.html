@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Database System</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 32px; background: #0f172a; color: #e2e8f0; }
+    h1 { margin: 0 0 8px; color: #38bdf8; }
+    .subtitle { color: #94a3b8; margin: 0 0 24px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 16px; }
+    .stat-label { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-size: 1.6rem; font-weight: 700; color: #f8fafc; margin-top: 6px; }
+    .forms { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    section, .card { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+    .card { margin-bottom: 0; }
+    h2 { color: #f8fafc; margin: 0 0 14px; font-size: 1.1rem; }
+    .count { color: #94a3b8; font-weight: normal; font-size: 0.9rem; }
+    form { display: flex; flex-direction: column; gap: 10px; }
+    input, select, button { padding: 9px 11px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; font-size: 0.9rem; }
+    button { background: #0284c7; border-color: #0284c7; color: #fff; font-weight: 600; cursor: pointer; }
+    button:hover { background: #0369a1; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #334155; }
+    th { color: #94a3b8; text-transform: uppercase; font-size: 0.76rem; letter-spacing: 0.05em; }
+    tr:hover td { background: #263449; }
+    .empty { color: #94a3b8; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Hotel Database System</h1>
+  <p class="subtitle">Mini Project &bull; GitHub Pages Edition (Browser Storage)</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="forms">
+    <div class="card">
+      <h2>Add Room</h2>
+      <form id="roomForm">
+        <input name="room_number" type="number" placeholder="Room Number (e.g. 101)" required />
+        <input name="room_type" type="text" placeholder="Room Type (e.g. Deluxe, Suite)" required />
+        <input name="room_rate" type="number" step="0.01" min="0" placeholder="Rate per night (e.g. 150.00)" required />
+        <button type="submit">Add Room</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>New Reservation</h2>
+      <form id="resForm">
+        <input name="reservation_id" type="number" placeholder="Reservation ID (e.g. 1)" required />
+        <input name="guest_name" type="text" placeholder="Guest Name" required />
+        <input name="room_number" type="number" placeholder="Room Number" required />
+        <input name="check_in_date" type="date" required />
+        <input name="check_out_date" type="date" required />
+        <input name="total_cost" type="number" step="0.01" min="0" placeholder="Total Cost" required />
+        <button type="submit">Create Reservation</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Record Payment</h2>
+      <form id="payForm">
+        <input name="payment_id" type="number" placeholder="Payment ID (e.g. 1)" required />
+        <input name="reservation_id" type="number" placeholder="Reservation ID" required />
+        <input name="payment_date" type="date" required />
+        <input name="payment_amount" type="number" step="0.01" min="0" placeholder="Amount" required />
+        <select name="payment_method" required>
+          <option value="Credit Card">Credit Card</option>
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+        <button type="submit">Record Payment</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="tables"></div>
+
+  <script>
+    const KEY = 'hotel_revenue_db_v1';
+    const defaultData = {
+      rooms: [
+        { room_number: 101, room_type: 'Standard', room_rate: 120.00 },
+        { room_number: 102, room_type: 'Deluxe', room_rate: 180.00 },
+        { room_number: 201, room_type: 'Suite', room_rate: 320.00 }
+      ],
+      reservations: [
+        { reservation_id: 1, guest_name: 'Alice Johnson', room_number: 102, check_in_date: '2026-11-20', check_out_date: '2026-11-23', total_cost: 540.00 }
+      ],
+      payments: [
+        { payment_id: 1, reservation_id: 1, payment_date: '2026-11-20', payment_amount: 540.00, payment_method: 'Credit Card' }
+      ]
+    };
+
+    function loadDB() {
+      const raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : structuredClone(defaultData);
+    }
+
+    function saveDB(db) {
+      localStorage.setItem(KEY, JSON.stringify(db));
+    }
+
+    function renderTable(title, rows) {
+      if (!rows.length) return `<section><h2>${title}</h2><p class="empty">No rows found.</p></section>`;
+      const cols = Object.keys(rows[0]);
+      return `
+        <section>
+          <h2>${title} <span class="count">(${rows.length})</span></h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
+              <tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${r[c] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
+
+    function render() {
+      const db = loadDB();
+      const totalRevenue = db.payments.reduce((s, p) => s + Number(p.payment_amount || 0), 0);
+
+      const monthlyMap = {};
+      db.payments.forEach(p => {
+        const month = (p.payment_date || '').slice(0, 7);
+        if (month) monthlyMap[month] = (monthlyMap[month] || 0) + Number(p.payment_amount || 0);
+      });
+      const monthlyRevenue = Object.entries(monthlyMap).map(([month, total_revenue]) => ({
+        month,
+        total_revenue: total_revenue.toFixed(2)
+      }));
+
+      document.getElementById('stats').innerHTML = `
+        <div class="stat"><div class="stat-label">Total Rooms</div><div class="stat-value">${db.rooms.length}</div></div>
+        <div class="stat"><div class="stat-label">Reservations</div><div class="stat-value">${db.reservations.length}</div></div>
+        <div class="stat"><div class="stat-label">Payments</div><div class="stat-value">${db.payments.length}</div></div>
+        <div class="stat"><div class="stat-label">Total Revenue</div><div class="stat-value">$${totalRevenue.toFixed(2)}</div></div>
+      `;
+
+      document.getElementById('tables').innerHTML =
+        renderTable('Rooms', db.rooms) +
+        renderTable('Reservations', db.reservations) +
+        renderTable('Payments', db.payments) +
+        renderTable('Monthly Revenue (View)', monthlyRevenue);
+    }
+
+    document.getElementById('roomForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const db = loadDB();
+      const f = new FormData(e.target);
+      db.rooms.push({ room_number: Number(f.get('room_number')), room_type: f.get('room_type'), room_rate: Number(f.get('room_rate')) });
+      saveDB(db);
+      e.target.reset();
+      render();
+    });
+
+    document.getElementById('resForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const db = loadDB();
+      const f = new FormData(e.target);
+      db.reservations.push({
+        reservation_id: Number(f.get('reservation_id')),
+        guest_name: f.get('guest_name'),
+        room_number: Number(f.get('room_number')),
+        check_in_date: f.get('check_in_date'),
+        check_out_date: f.get('check_out_date'),
+        total_cost: Number(f.get('total_cost'))
+      });
+      saveDB(db);
+      e.target.reset();
+      render();
+    });
+
+    document.getElementById('payForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const db = loadDB();
+      const f = new FormData(e.target);
+      db.payments.push({
+        payment_id: Number(f.get('payment_id')),
+        reservation_id: Number(f.get('reservation_id')),
+        payment_date: f.get('payment_date'),
+        payment_amount: Number(f.get('payment_amount')),
+        payment_method: f.get('payment_method')
+      });
+      saveDB(db);
+      e.target.reset();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
