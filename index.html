@@ -307,6 +307,26 @@
       color: #000000;
       font-weight: 700;
     }
+    .delete-btn {
+      background: #ffffff;
+      border: 1px solid #dc2626;
+      color: #dc2626;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .delete-btn:hover {
+      background: #dc2626;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+    }
     .empty-msg {
       text-align: center;
       color: var(--text-dim);
@@ -331,15 +351,15 @@
     <header>
       <div>
         <div class="brand-title">HOTEL REVENUE SYSTEM</div>
-        <div class="brand-subtitle">Relational DBMS Engine &bull; Validated Booking & Revenue Management</div>
+        <div class="brand-subtitle">Relational DBMS Engine &bull; Validated Booking & Revenue Ledger (INR ₹)</div>
       </div>
       <div class="header-badges">
-        <div class="badge">MySQL Engine Active</div>
-        <div class="badge badge-outline">Strict Integrity Controls</div>
+        <div class="badge">Currency: INR (₹)</div>
+        <div class="badge badge-outline">CRUD & Deletion Active</div>
       </div>
     </header>
 
-    <!-- Key Metrics -->
+    <!-- Key Metrics in INR -->
     <div class="kpi-grid" id="kpiGrid"></div>
 
     <!-- Alert Notices -->
@@ -350,7 +370,7 @@
       <!-- Add Room Form -->
       <div class="form-card">
         <h2>Add Room <span class="table-tag">rooms</span></h2>
-        <div class="card-subtitle">Validates room number uniqueness and positive nightly rate.</div>
+        <div class="card-subtitle">Validates room number uniqueness and positive nightly rate in INR.</div>
         <form class="entry-form" id="roomForm">
           <div class="form-group">
             <label>Room Number (Positive Integer)</label>
@@ -358,11 +378,11 @@
           </div>
           <div class="form-group">
             <label>Room Category</label>
-            <input name="room_type" type="text" class="input-field" placeholder="e.g. Executive Deluxe" required maxlength="50" />
+            <input name="room_type" type="text" class="input-field" placeholder="e.g. Deluxe Suite" required maxlength="50" />
           </div>
           <div class="form-group">
-            <label>Nightly Rate (USD > 0)</label>
-            <input name="room_rate" type="number" step="0.01" class="input-field" placeholder="e.g. 250.00" required min="1" max="100000" />
+            <label>Nightly Rate (₹ INR > 0)</label>
+            <input name="room_rate" type="number" step="0.01" class="input-field" placeholder="e.g. 3500.00" required min="1" max="1000000" />
           </div>
           <button type="submit" class="submit-btn">Add Room</button>
         </form>
@@ -379,7 +399,7 @@
           </div>
           <div class="form-group">
             <label>Guest Full Name</label>
-            <input name="guest_name" type="text" class="input-field" placeholder="e.g. Eleanor Vance" required maxlength="50" />
+            <input name="guest_name" type="text" class="input-field" placeholder="e.g. Aarav Sharma" required maxlength="50" />
           </div>
           <div class="form-group">
             <label>Allocated Room</label>
@@ -396,8 +416,8 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Total Price ($)</label>
-            <input name="total_cost" type="number" step="0.01" class="input-field" placeholder="e.g. 750.00" required min="1" />
+            <label>Total Price (₹ INR)</label>
+            <input name="total_cost" type="number" step="0.01" class="input-field" placeholder="e.g. 10500.00" required min="1" />
           </div>
           <button type="submit" class="submit-btn">Confirm Reservation</button>
         </form>
@@ -421,14 +441,15 @@
             <input name="payment_date" type="date" class="input-field" required />
           </div>
           <div class="form-group">
-            <label>Amount ($)</label>
-            <input name="payment_amount" type="number" step="0.01" class="input-field" placeholder="e.g. 750.00" required min="0.01" />
+            <label>Amount (₹ INR)</label>
+            <input name="payment_amount" type="number" step="0.01" class="input-field" placeholder="e.g. 10500.00" required min="0.01" />
           </div>
           <div class="form-group">
             <label>Payment Method</label>
             <select name="payment_method" class="select-field" required>
+              <option value="UPI / GPay / PhonePe">UPI / GPay / PhonePe</option>
+              <option value="Net Banking">Net Banking</option>
               <option value="Credit Card">Credit Card</option>
-              <option value="Bank Transfer">Bank Transfer</option>
               <option value="Debit Card">Debit Card</option>
               <option value="Cash">Cash</option>
             </select>
@@ -438,31 +459,32 @@
       </div>
     </div>
 
-    <!-- Data Ledgers -->
+    <!-- Data Ledgers with Deletion Support -->
     <div class="tables-section" id="tablesContainer"></div>
 
     <footer>
-      Hotel Revenue Database Management System &bull; Clean Monochrome Edition &bull; Production Certified
+      Hotel Revenue Database Management System &bull; Full INR Currency & Deletion Engine
     </footer>
   </div>
 
   <script>
-    const STORAGE_KEY = 'hotel_revenue_db_clean_v3';
+    const STORAGE_KEY = 'hotel_revenue_db_inr_v4';
 
+    // Seed data localized to INR
     const defaultData = {
       rooms: [
-        { room_number: 101, room_type: 'Standard Single', room_rate: 120.00 },
-        { room_number: 102, room_type: 'Executive King Suite', room_rate: 220.00 },
-        { room_number: 201, room_type: 'Deluxe Ocean View', room_rate: 310.00 },
-        { room_number: 301, room_type: 'Presidential Penthouse', room_rate: 650.00 }
+        { room_number: 101, room_type: 'Standard Single Room', room_rate: 2200.00 },
+        { room_number: 102, room_type: 'Executive King Suite', room_rate: 4500.00 },
+        { room_number: 201, room_type: 'Deluxe Heritage View', room_rate: 6800.00 },
+        { room_number: 301, room_type: 'Presidential Royal Villa', room_rate: 15000.00 }
       ],
       reservations: [
-        { reservation_id: 1, guest_name: 'Arthur Pendelton', room_number: 102, check_in_date: '2026-11-20', check_out_date: '2026-11-23', total_cost: 660.00 },
-        { reservation_id: 2, guest_name: 'Beatrice Sterling', room_number: 201, check_in_date: '2026-11-22', check_out_date: '2026-11-25', total_cost: 930.00 }
+        { reservation_id: 1, guest_name: 'Aarav Sharma', room_number: 102, check_in_date: '2026-11-20', check_out_date: '2026-11-23', total_cost: 13500.00 },
+        { reservation_id: 2, guest_name: 'Pooja Verma', room_number: 201, check_in_date: '2026-11-22', check_out_date: '2026-11-25', total_cost: 20400.00 }
       ],
       payments: [
-        { payment_id: 1, reservation_id: 1, payment_date: '2026-11-20', payment_amount: 660.00, payment_method: 'Credit Card' },
-        { payment_id: 2, reservation_id: 2, payment_date: '2026-11-22', payment_amount: 930.00, payment_method: 'Bank Transfer' }
+        { payment_id: 1, reservation_id: 1, payment_date: '2026-11-20', payment_amount: 13500.00, payment_method: 'UPI / GPay / PhonePe' },
+        { payment_id: 2, reservation_id: 2, payment_date: '2026-11-22', payment_amount: 20400.00, payment_method: 'Net Banking' }
       ]
     };
 
@@ -492,6 +514,11 @@
       );
     }
 
+    function formatINR(val) {
+      const num = Number(val || 0);
+      return '₹' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
     function showNotice(type, message) {
       const el = document.getElementById('noticeContainer');
       el.innerHTML = `
@@ -505,7 +532,51 @@
       }, 6000);
     }
 
-    // Room Form Handling
+    // Deletion Operations
+    window.deleteRoom = function(roomNumber) {
+      if (!confirm(`Are you sure you want to delete Room #${roomNumber}?\nAssociated reservations and payments for this room will also be removed.`)) {
+        return;
+      }
+      const db = loadDB();
+      // Find reservations tied to this room
+      const resIdsToDelete = db.reservations.filter(r => r.room_number === roomNumber).map(r => r.reservation_id);
+      
+      // Cascade delete
+      db.rooms = db.rooms.filter(r => r.room_number !== roomNumber);
+      db.reservations = db.reservations.filter(r => r.room_number !== roomNumber);
+      db.payments = db.payments.filter(p => !resIdsToDelete.includes(p.reservation_id));
+
+      saveDB(db);
+      showNotice('success', `Room #${roomNumber} and its associated records have been deleted.`);
+      render();
+    };
+
+    window.deleteReservation = function(reservationId) {
+      if (!confirm(`Are you sure you want to delete Reservation #${reservationId}?\nAll payments recorded for this reservation will also be removed.`)) {
+        return;
+      }
+      const db = loadDB();
+      db.reservations = db.reservations.filter(r => r.reservation_id !== reservationId);
+      db.payments = db.payments.filter(p => p.reservation_id !== reservationId);
+
+      saveDB(db);
+      showNotice('success', `Reservation #${reservationId} and its payments have been deleted.`);
+      render();
+    };
+
+    window.deletePayment = function(paymentId) {
+      if (!confirm(`Are you sure you want to delete Payment #${paymentId}?`)) {
+        return;
+      }
+      const db = loadDB();
+      db.payments = db.payments.filter(p => p.payment_id !== paymentId);
+
+      saveDB(db);
+      showNotice('success', `Payment #${paymentId} has been deleted.`);
+      render();
+    };
+
+    // Room Form Submission
     document.getElementById('roomForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const f = new FormData(e.target);
@@ -531,11 +602,11 @@
       db.rooms.push({ room_number, room_type, room_rate });
       saveDB(db);
       e.target.reset();
-      showNotice('success', `Room #${room_number} created successfully.`);
+      showNotice('success', `Room #${room_number} added successfully at ${formatINR(room_rate)}/night.`);
       render();
     });
 
-    // Reservation Form Handling
+    // Reservation Form Submission
     document.getElementById('resForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const f = new FormData(e.target);
@@ -586,11 +657,11 @@
       });
       saveDB(db);
       e.target.reset();
-      showNotice('success', `Reservation #${reservation_id} booked for ${guest_name}.`);
+      showNotice('success', `Reservation #${reservation_id} booked for ${guest_name} at ${formatINR(total_cost)}.`);
       render();
     });
 
-    // Payment Form Handling
+    // Payment Form Submission
     document.getElementById('payForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const f = new FormData(e.target);
@@ -612,7 +683,7 @@
         return;
       }
       if (isNaN(payment_amount) || payment_amount <= 0) {
-        showNotice('error', 'Payment amount must be greater than $0.00.');
+        showNotice('error', 'Payment amount must be greater than ₹0.00.');
         return;
       }
 
@@ -622,7 +693,7 @@
       const remainingBalance = reservation.total_cost - existingPaid;
 
       if (payment_amount > (remainingBalance + 0.01)) {
-        showNotice('error', `Overpayment Error: Maximum remaining balance for this reservation is $${remainingBalance.toFixed(2)}.`);
+        showNotice('error', `Overpayment Error: Maximum remaining unpaid balance for this reservation is ${formatINR(remainingBalance)}.`);
         return;
       }
 
@@ -635,11 +706,11 @@
       });
       saveDB(db);
       e.target.reset();
-      showNotice('success', `Payment #${payment_id} of $${payment_amount.toFixed(2)} recorded.`);
+      showNotice('success', `Payment #${payment_id} of ${formatINR(payment_amount)} settled via ${payment_method}.`);
       render();
     });
 
-    function renderTableHTML(title, badge, rows) {
+    function renderTableHTML(title, badge, rows, entityType) {
       if (!rows.length) {
         return `
           <div class="table-container">
@@ -652,16 +723,27 @@
         `;
       }
       const cols = Object.keys(rows[0]);
-      const thead = cols.map(c => `<th>${c.replace(/_/g, ' ')}</th>`).join('');
+      const thead = cols.map(c => `<th>${c.replace(/_/g, ' ')}</th>`).join('') + (entityType ? `<th>Action</th>` : '');
       const tbody = rows.map(r => {
-        return `<tr>${cols.map(c => {
+        let actionBtn = '';
+        if (entityType === 'rooms') {
+          actionBtn = `<td><button class="delete-btn" onclick="deleteRoom(${r.room_number})">Delete</button></td>`;
+        } else if (entityType === 'reservations') {
+          actionBtn = `<td><button class="delete-btn" onclick="deleteReservation(${r.reservation_id})">Delete</button></td>`;
+        } else if (entityType === 'payments') {
+          actionBtn = `<td><button class="delete-btn" onclick="deletePayment(${r.payment_id})">Delete</button></td>`;
+        }
+
+        const cells = cols.map(c => {
           const val = r[c];
           const isAmount = (c.includes('cost') || c.includes('rate') || c.includes('amount') || c.includes('revenue'));
           if (isAmount && !isNaN(val)) {
-            return `<td class="amount-cell">$${Number(val).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>`;
+            return `<td class="amount-cell">${formatINR(val)}</td>`;
           }
           return `<td>${val ?? ''}</td>`;
-        }).join('')}</tr>`;
+        }).join('');
+
+        return `<tr>${cells}${actionBtn}</tr>`;
       }).join('');
 
       return `
@@ -686,13 +768,13 @@
 
       // Populate selects
       const roomSelect = document.getElementById('roomSelect');
-      roomSelect.innerHTML = db.rooms.map(r => `<option value="${r.room_number}">Room #${r.room_number} - ${r.room_type} ($${Number(r.room_rate).toFixed(2)}/nt)</option>`).join('');
+      roomSelect.innerHTML = db.rooms.map(r => `<option value="${r.room_number}">Room #${r.room_number} - ${r.room_type} (${formatINR(r.room_rate)}/nt)</option>`).join('');
 
       const resSelect = document.getElementById('resSelect');
       resSelect.innerHTML = db.reservations.map(r => {
         const paid = db.payments.filter(p => p.reservation_id === r.reservation_id).reduce((s, p) => s + Number(p.payment_amount), 0);
         const rem = Math.max(0, r.total_cost - paid);
-        return `<option value="${r.reservation_id}">Res #${r.reservation_id} (${r.guest_name}) - Unpaid: $${rem.toFixed(2)}</option>`;
+        return `<option value="${r.reservation_id}">Res #${r.reservation_id} (${r.guest_name}) - Unpaid: ${formatINR(rem)}</option>`;
       }).join('');
 
       // Monthly Revenue View calculation
@@ -706,7 +788,7 @@
         total_revenue: total_revenue.toFixed(2)
       }));
 
-      // Render KPIs
+      // Render KPIs in INR
       document.getElementById('kpiGrid').innerHTML = `
         <div class="kpi-card">
           <div class="kpi-label">Total Rooms</div>
@@ -725,17 +807,17 @@
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Total Realized Revenue</div>
-          <div class="kpi-val">$${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
-          <div class="kpi-hint">Aggregated from monthly view</div>
+          <div class="kpi-val">${formatINR(totalRevenue)}</div>
+          <div class="kpi-hint">Aggregated in Indian Rupees (₹)</div>
         </div>
       `;
 
-      // Render Tables
+      // Render Tables with Entity deletion hooks
       document.getElementById('tablesContainer').innerHTML =
-        renderTableHTML('Rooms Registry', 'TABLE: rooms', db.rooms) +
-        renderTableHTML('Reservations Ledger', 'TABLE: reservations', db.reservations) +
-        renderTableHTML('Payments Ledger', 'TABLE: payments', db.payments) +
-        renderTableHTML('Monthly Revenue Projection', 'VIEW: monthly_revenue', monthlyRevenue);
+        renderTableHTML('Rooms Registry', 'TABLE: rooms', db.rooms, 'rooms') +
+        renderTableHTML('Reservations Ledger', 'TABLE: reservations', db.reservations, 'reservations') +
+        renderTableHTML('Payments Ledger', 'TABLE: payments', db.payments, 'payments') +
+        renderTableHTML('Monthly Revenue Projection', 'VIEW: monthly_revenue', monthlyRevenue, null);
     }
 
     render();
