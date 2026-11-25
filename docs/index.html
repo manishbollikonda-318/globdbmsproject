@@ -542,66 +542,6 @@
     <!-- Security Alert Notification -->
     <div id="noticeContainer"></div>
 
-    <!-- HACKER TERMINAL & PENTEST LAB -->
-    <div class="security-terminal">
-      <div class="terminal-header">
-        <div class="terminal-title">
-          <span>&gt;_ PENTEST LAB & ZERO-DAY SIMULATOR</span>
-          <span style="color:var(--text-dim);">[PORT 3306 / WAF DEFENSE ACTIVE]</span>
-        </div>
-        <div class="terminal-dots">
-          <div class="t-dot red"></div>
-          <div class="t-dot gold"></div>
-          <div class="t-dot violet"></div>
-        </div>
-      </div>
-      <div class="terminal-body">
-        <div class="attack-controls">
-          <h3>Simulate Attacks & Verify Auto-Rectification</h3>
-          <p class="attack-desc">Execute adversarial attack vectors. The system acts as penetration tester, tries to exploit the database, intercepts the payload via domain validators, and auto-rectifies and debugs the state.</p>
-          
-          <div class="attack-grid">
-            <button class="attack-btn" onclick="runAttack('sqli')">
-              <strong>1. SQL Injection</strong>
-              <span>Payload: ' OR '1'='1' -- DROP</span>
-            </button>
-            <button class="attack-btn" onclick="runAttack('xss')">
-              <strong>2. Stored XSS Script</strong>
-              <span>Payload: &lt;script&gt;stealCookies()&lt;/script&gt;</span>
-            </button>
-            <button class="attack-btn" onclick="runAttack('negative_rate')">
-              <strong>3. Negative Room Trigger</strong>
-              <span>Payload: room_rate = -$450.00</span>
-            </button>
-            <button class="attack-btn" onclick="runAttack('time_paradox')">
-              <strong>4. Chrono-Inversion</strong>
-              <span>Check-out before Check-in date</span>
-            </button>
-            <button class="attack-btn" onclick="runAttack('double_booking')">
-              <strong>5. Double Booking Conflict</strong>
-              <span>Book already-occupied room #102</span>
-            </button>
-            <button class="attack-btn" onclick="runAttack('fk_ghost')">
-              <strong>6. Orphan FK Violation</strong>
-              <span>Payment on non-existent Res #999</span>
-            </button>
-          </div>
-
-          <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Adversarial Custom Payload Tester</div>
-          <div class="custom-exploit-box">
-            <input type="text" id="customPayload" class="custom-input" placeholder="Type custom exploit, e.g. <img src=x onerror=alert(1)> or -9999" />
-            <button class="fire-attack-btn" onclick="runCustomAttack()">TEST HACK</button>
-          </div>
-        </div>
-
-        <div class="terminal-console" id="terminalLogs">
-          <div class="log-line log-dim">[SYSTEM BOOT]: Defensive Security Monitoring Node Initialized.</div>
-          <div class="log-line log-gold">[INFO]: Type validators, Referential Integrity Checks & WAF active.</div>
-          <div class="log-line log-shield">[SECURE]: Ready to inspect payload and enforce atomic constraints...</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Operations / Forms Section -->
     <div class="forms-grid">
       <!-- Add Room Form -->

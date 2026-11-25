@@ -469,44 +469,6 @@ app.get('/', async (req, res) => {
     ${errNotice}
     ${successNotice}
 
-    <div class="security-terminal">
-      <div class="terminal-header">
-        <div class="terminal-title">
-          <span>&gt;_ PENTEST LAB & ZERO-DAY SIMULATOR</span>
-          <span style="color:var(--text-dim);">[ATTACK VECTORS ON MYSQL BACKEND]</span>
-        </div>
-      </div>
-      <div class="terminal-body">
-        <div class="attack-controls">
-          <h3>Adversarial Attack Simulator</h3>
-          <p class="attack-desc">Test real malicious payloads against our parameterized queries, DB triggers, and FK integrity safeguards.</p>
-          <div class="attack-grid">
-            <button class="attack-btn" onclick="testAttack('sqli')">
-              <strong>1. SQL Injection</strong>
-              <span>Payload: ' OR 1=1 -- DROP</span>
-            </button>
-            <button class="attack-btn" onclick="testAttack('xss')">
-              <strong>2. Stored XSS Script</strong>
-              <span>Payload: &lt;script&gt;exploit()&lt;/script&gt;</span>
-            </button>
-            <button class="attack-btn" onclick="testAttack('negative')">
-              <strong>3. Negative Room Trigger</strong>
-              <span>Payload: room_rate = -$300</span>
-            </button>
-            <button class="attack-btn" onclick="testAttack('fk_ghost')">
-              <strong>4. Ghost FK Insertion</strong>
-              <span>Payment on non-existent res</span>
-            </button>
-          </div>
-        </div>
-        <div class="terminal-console" id="serverLogs">
-          <div class="log-line log-dim">[SYSTEM BOOT]: Node.js Express + MySQL2 Connection Established.</div>
-          <div class="log-line log-gold">[PROTECTION]: Prepared Statements Active. SQL Injection impossible.</div>
-          <div class="log-line log-shield">[TRIGGER READY]: Trigger check_room_rate armed for negative rates.</div>
-        </div>
-      </div>
-    </div>
-
     <div class="forms-grid">
       <!-- Add Room Form -->
       <div class="luxury-card">
